@@ -20,12 +20,16 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
     uint256 public ticketPurchaseDeadline;
 
     // Event Outputs
-    event TicketPurchased(address indexed participant);
-    event WinnerSelected(address indexed winner);
-    event PayoutFailed(address indexed winner, uint256 amount);
+    event TicketPurchased(address participant);
+    event WinnerSelected(address winner);
+    event PayoutFailed(address winner, uint256 amount);
 
     // Constructor initializes the lottery contract with the token, ticket price, and purchase deadline.
-    constructor(IERC20 _token, uint256 _ticketPrice) {
+    constructor(
+        IERC20 _token, 
+        uint256 _ticketPrice
+        ) 
+    {
         require(address(_token) != address(0), "Token address cannot be zero");
         require(_ticketPrice > 0, "Ticket price must be greater than zero");
 

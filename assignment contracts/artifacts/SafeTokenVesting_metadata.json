@@ -84,7 +84,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/SafeTokenVesting.sol": "SafeTokenVesting"
+			"assignment contracts/SafeTokenVesting.sol": "SafeTokenVesting"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -106,7 +106,7 @@
 				"dweb:/ipfs/QmeTTxZ7qVk9rjEv2R4CpCwdf8UMCcRqDNMvzNxHc3Fnn9"
 			]
 		},
-		"contracts/SafeTokenVesting.sol": {
+		"assignment contracts/SafeTokenVesting.sol": {
 			"keccak256": "0x5d778d52db543823501375efdefad092c72a4ee9b5cfcb5ed079623e8f6ee1e6",
 			"license": "MIT",
 			"urls": [

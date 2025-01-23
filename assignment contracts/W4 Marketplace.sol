@@ -23,14 +23,31 @@ contract Marketplace {
     }
 
     Item[] public items;
+
     uint256 itemIdCounter;
+
+    // events
+    event ItemCreated(uint256 id, address seller, uint256 price);
 
     constructor() {
 
     }
 
     function listItem(uint256 _price) public {
+        require(_price > 0, "Price must be greater than zero");
 
+        Item memory newItem = Item({
+            id: itemIdCounter,
+            seller: msg.sender,
+            price: _price,
+            isSold: false,
+            buyer: address(0)
+        });
+
+        items.push(newItem);
+        itemIdCounter++;
+
+        emit ItemCreated(newItem.id, newItem.seller, newItem.price);
     }
 
     function purchaseItem(uint256 _itemId) public {
