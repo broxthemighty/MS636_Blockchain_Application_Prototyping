@@ -10,10 +10,67 @@ pragma solidity >=0.8.2 <0.9.0;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
+// dummy ERC20 token for testing
+contract DummyToken is IERC20 {
+
+    string public name = "Dummy Token";
+    string public symbol = "DMT";
+    uint8 public decimals = 18;
+    uint256 public totalSupply;
+    mapping(address => uint256) private balances;
+    mapping(address => mapping(address => uint256)) private allowances;
+
+    constructor(uint256 initialSupply) {
+        mint(msg.sender, initialSupply);
+    }
+
+    function balanceOf(address account) public view override returns (uint256) {
+        return balances[account];
+    }
+
+    function transfer(address recipient, uint256 amount) public override returns (bool) {
+        require(balances[msg.sender] >= amount, "Insufficient balance");
+        balances[msg.sender] -= amount;
+        balances[recipient] += amount;
+        emit Transfer(msg.sender, recipient, amount);
+        return true;
+    }
+
+    function approve(address spender, uint256 amount) public override returns (bool) {
+        allowances[msg.sender][spender] = amount;
+        emit Approval(msg.sender, spender, amount);
+        return true;
+    }
+
+    function transferFrom(address sender, address recipient, uint256 amount) public override returns (bool) {
+        require(balances[sender] >= amount, "Insufficient balance");
+        require(allowances[sender][msg.sender] >= amount, "Allowance exceeded");
+        balances[sender] -= amount;
+        allowances[sender][msg.sender] -= amount;
+        balances[recipient] += amount;
+        emit Transfer(sender, recipient, amount);
+        return true;
+    }
+
+    function allowance(address owner, address spender) public view override returns (uint256) {
+        return allowances[owner][spender];
+    }
+
+    // mints tokens to a specified account (for testing purposes only).
+    function mint(address account, uint256 amount) public {
+        totalSupply += amount;
+        balances[account] += amount;
+        emit Transfer(address(0), account, amount);
+    }
+}
+
+// safe crowd funding contract
  contract SafeCrowdfunding {
 
     // state variables
     IERC20 public token;
+
+    // project structure
     struct Project{
         uint256 id;
         address creator;
@@ -24,15 +81,18 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
         uint256 releasedTokens;
     }
 
+    // array of projects
     Project[] private _projects;
 
+    // counter for project ids
     uint256 public projectIdCounter;
 
-    // Events
+    // events
     event ProjectCreated(uint256 projectId, address creator, uint256 goalAmount, uint256 vestingDuration);
     event ContributionMade(uint256 projectId, address contributor, uint256 amount);
     event FundsClaimed(uint256 projectId, address creator, uint256 amount);
 
+    // constructor initializes with token address
     constructor(address _tokenAddress) {
         require(_tokenAddress != address(0), "Invalid token address");
         token = IERC20(_tokenAddress);
@@ -66,7 +126,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
         Project storage project = _projects[_projectId];
         require(project.currentAmount + _amount <= project.goalAmount, "Over project goal");
 
-        // Safe token transfer using try-catch
+        // safe token transfer using try-catch
         try token.transferFrom(msg.sender, address(this), _amount) {
             project.currentAmount += _amount;
             emit ContributionMade(_projectId, msg.sender, _amount);
@@ -95,7 +155,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
         uint256 releasable = vestedAmount - project.releasedTokens;
         require(releasable > 0, "No tokens available for release");
 
-        // Safe token transfer using try-catch
+        // safe token transfer using try-catch
         try token.transfer(project.creator, releasable) {
             project.releasedTokens += releasable;
             emit FundsClaimed(_projectId, msg.sender, releasable);

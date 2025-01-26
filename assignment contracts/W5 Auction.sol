@@ -10,39 +10,165 @@ pragma solidity >=0.8.2 <0.9.0;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-contract Auction {
+// dummy ERC20 token for testing
+contract DummyToken is IERC20 {
 
+    string public name = "Dummy Token";
+    string public symbol = "DMT";
+    uint8 public decimals = 18;
+    uint256 public totalSupply;
+    mapping(address => uint256) private balances;
+    mapping(address => mapping(address => uint256)) private allowances;
+
+    constructor(uint256 initialSupply) {
+        mint(msg.sender, initialSupply);
+    }
+
+    function balanceOf(address account) public view override returns (uint256) {
+        return balances[account];
+    }
+
+    function transfer(address recipient, uint256 amount) public override returns (bool) {
+        require(balances[msg.sender] >= amount, "Insufficient balance");
+        balances[msg.sender] -= amount;
+        balances[recipient] += amount;
+        emit Transfer(msg.sender, recipient, amount);
+        return true;
+    }
+
+    function approve(address spender, uint256 amount) public override returns (bool) {
+        allowances[msg.sender][spender] = amount;
+        emit Approval(msg.sender, spender, amount);
+        return true;
+    }
+
+    function transferFrom(address sender, address recipient, uint256 amount) public override returns (bool) {
+        require(balances[sender] >= amount, "Insufficient balance");
+        require(allowances[sender][msg.sender] >= amount, "Allowance exceeded");
+        balances[sender] -= amount;
+        allowances[sender][msg.sender] -= amount;
+        balances[recipient] += amount;
+        emit Transfer(sender, recipient, amount);
+        return true;
+    }
+
+    function allowance(address owner, address spender) public view override returns (uint256) {
+        return allowances[owner][spender];
+    }
+
+    // mints tokens to a specified account (for testing purposes only).
+    function mint(address account, uint256 amount) public {
+        totalSupply += amount;
+        balances[account] += amount;
+        emit Transfer(address(0), account, amount);
+    }
+}
+
+// auction contract
+contract Auction {
+    
     // state variables
     IERC20 public token;
+
+    // auction item structure
     struct AuctionItem {
-        uint256 id;
-        address seller;
-        uint256 minBid;
+        uint256 id; 
+        address seller; 
+        uint256 minBid; 
         uint256 highestBid;
-        bool isActive;
-        uint256 endTime;
+        address highestBidder; 
+        bool isActive; 
+        uint256 endTime; 
     }
 
+    // array of auctions
     AuctionItem[] public auctions;
+
+    // counter for auction id
     uint256 public auctionIdCounter;
 
-    constructor() {
-
+    // events
+    event AuctionCreated(uint256 id, address indexed seller, uint256 minBid, uint256 endTime);
+    event BidPlaced(uint256 indexed auctionId, address indexed bidder, uint256 bidAmount);
+    event AuctionFinalized(uint256 indexed auctionId, address indexed winner, uint256 highestBid);
+    
+    // initializes the auction contract with the ERC20 token address.
+    constructor(address _token) {
+        require(_token != address(0), "Token address cannot be zero.");
+        token = IERC20(_token);
     }
 
-    function createAuction(uint256 _minBid, uint256 _duration) public {
+    // creates a new auction.
+    function createAuction(uint256 _minBid, uint256 _duration) external {
+        require(_minBid > 0, "Minimum bid must be greater than zero.");
+        require(_duration > 0, "Duration must be greater than zero.");
 
+        auctions.push(AuctionItem({
+            id: auctionIdCounter,
+            seller: msg.sender,
+            minBid: _minBid,
+            highestBid: 0,
+            highestBidder: address(0),
+            isActive: true,
+            endTime: block.timestamp + _duration
+        }));
+
+        emit AuctionCreated(auctionIdCounter, msg.sender, _minBid, block.timestamp + _duration);
+
+        auctionIdCounter++;
     }
 
-    function placeBid(uint256 _auctionId, uint256 _bidAmount) public {
+    // places a bid on an active auction.
+    function placeBid(uint256 _auctionId, uint256 _bidAmount) external {
+        require(_auctionId < auctions.length, "Auction does not exist.");
+        AuctionItem storage auction = auctions[_auctionId];
+        require(auction.isActive, "Auction is not active.");
+        require(block.timestamp < auction.endTime, "Auction has ended.");
+        require(_bidAmount > auction.highestBid, "Bid must be higher than the current highest bid.");
+        require(_bidAmount >= auction.minBid, "Bid must meet the minimum bid amount.");
 
+        // transfer tokens from bidder to the contract
+        try token.transferFrom(msg.sender, address(this), _bidAmount) {
+            // refund previous highest bidder, if able
+            if (auction.highestBid > 0) {
+                token.transfer(auction.highestBidder, auction.highestBid);
+            }
+
+            // update auction with new highest bid
+            auction.highestBid = _bidAmount;
+            auction.highestBidder = msg.sender;
+
+            emit BidPlaced(_auctionId, msg.sender, _bidAmount);
+        } catch {
+            revert("Token transfer failed.");
+        }
     }
 
-    function finalizeAuction(uint256 _auctionId) public {
+    // finalizes an auction, transferring the highest bid to the seller.
+    function finalizeAuction(uint256 _auctionId) external {
+        require(_auctionId < auctions.length, "Auction does not exist.");
+        AuctionItem storage auction = auctions[_auctionId];
+        require(block.timestamp >= auction.endTime, "Auction has not ended.");
+        require(auction.isActive, "Auction is not active.");
 
+        auction.isActive = false;
+
+        if (auction.highestBid > 0) {
+            // transfer highest bid to the seller
+            try token.transfer(auction.seller, auction.highestBid) {
+                emit AuctionFinalized(_auctionId, auction.highestBidder, auction.highestBid);
+            } catch {
+                revert("Token transfer to seller failed.");
+            }
+        } else {
+            // no bids, no transfer required
+            emit AuctionFinalized(_auctionId, address(0), 0);
+        }
     }
 
-    function getAuctionDetails(uint256 _auctionId) public view returns (AuctionItem memory) {
-        
+    // retrieves the details of a specific auction.
+    function getAuctionDetails(uint256 _auctionId) external view returns (AuctionItem memory) {
+        require(_auctionId < auctions.length, "Auction does not exist.");
+        return auctions[_auctionId];
     }
 }

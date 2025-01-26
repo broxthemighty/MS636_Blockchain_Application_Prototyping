@@ -52,6 +52,19 @@
 			},
 			{
 				"inputs": [],
+				"name": "beneficiary",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "claimTokens",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -59,7 +72,92 @@
 			},
 			{
 				"inputs": [],
+				"name": "fundContract",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getContractBalance",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
 				"name": "getVestedTokens",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "releasedTokens",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "startTime",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "token",
+				"outputs": [
+					{
+						"internalType": "contract IERC20",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "totalTokens",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "vestingDuration",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -79,12 +177,13 @@
 		"userdoc": {
 			"kind": "user",
 			"methods": {},
+			"notice": "Token vesting contract",
 			"version": 1
 		}
 	},
 	"settings": {
 		"compilationTarget": {
-			"assignment contracts/SafeTokenVesting.sol": "SafeTokenVesting"
+			"assignment contracts/W1 SafeTokenVesting.sol": "SafeTokenVesting"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -106,12 +205,12 @@
 				"dweb:/ipfs/QmeTTxZ7qVk9rjEv2R4CpCwdf8UMCcRqDNMvzNxHc3Fnn9"
 			]
 		},
-		"assignment contracts/SafeTokenVesting.sol": {
-			"keccak256": "0x5d778d52db543823501375efdefad092c72a4ee9b5cfcb5ed079623e8f6ee1e6",
+		"assignment contracts/W1 SafeTokenVesting.sol": {
+			"keccak256": "0xe7959727c27cf65dc0a09c810c65ce186cc815e9de9749524ec5692d923a6a7e",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://598fc84f6d04e0316b3c09e2af925b2eec872195b0aeec284c12491182a759a8",
-				"dweb:/ipfs/QmR6VtpebF9NkoPDdBfWsjkXxun8FtmozTu62gZ6CJtTaN"
+				"bzz-raw://c8117af9f77e03ed893acf618082bc010b2d1b10058cfb1840c1e90275af0232",
+				"dweb:/ipfs/QmSCZZDG3CHMqqrBg5NmcrzBgh36srZ19zQxiJPvu6kzJ1"
 			]
 		}
 	},

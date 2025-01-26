@@ -10,6 +10,61 @@ pragma solidity >=0.8.2 <0.9.0;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
+// dummy ERC20 token for testing
+contract DummyToken is IERC20 {
+
+    string public name = "Dummy Token";
+    string public symbol = "DMT";
+    uint8 public decimals = 18;
+    uint256 public totalSupply;
+    mapping(address => uint256) private balances;
+    mapping(address => mapping(address => uint256)) private allowances;
+
+    constructor(uint256 initialSupply) {
+        mint(msg.sender, initialSupply);
+    }
+
+    function balanceOf(address account) public view override returns (uint256) {
+        return balances[account];
+    }
+
+    function transfer(address recipient, uint256 amount) public override returns (bool) {
+        require(balances[msg.sender] >= amount, "Insufficient balance");
+        balances[msg.sender] -= amount;
+        balances[recipient] += amount;
+        emit Transfer(msg.sender, recipient, amount);
+        return true;
+    }
+
+    function approve(address spender, uint256 amount) public override returns (bool) {
+        allowances[msg.sender][spender] = amount;
+        emit Approval(msg.sender, spender, amount);
+        return true;
+    }
+
+    function transferFrom(address sender, address recipient, uint256 amount) public override returns (bool) {
+        require(balances[sender] >= amount, "Insufficient balance");
+        require(allowances[sender][msg.sender] >= amount, "Allowance exceeded");
+        balances[sender] -= amount;
+        allowances[sender][msg.sender] -= amount;
+        balances[recipient] += amount;
+        emit Transfer(sender, recipient, amount);
+        return true;
+    }
+
+    function allowance(address owner, address spender) public view override returns (uint256) {
+        return allowances[owner][spender];
+    }
+
+    // mints tokens to a specified account (for testing purposes only).
+    function mint(address account, uint256 amount) public {
+        totalSupply += amount;
+        balances[account] += amount;
+        emit Transfer(address(0), account, amount);
+    }
+}
+
+// safe lottery contract
  contract SafeLottery {
 
     // state variables
@@ -19,17 +74,13 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
     uint256 public ticketPrice;
     uint256 public ticketPurchaseDeadline;
 
-    // Event Outputs
+    // event Outputs
     event TicketPurchased(address participant);
     event WinnerSelected(address winner);
     event PayoutFailed(address winner, uint256 amount);
 
-    // Constructor initializes the lottery contract with the token, ticket price, and purchase deadline.
-    constructor(
-        IERC20 _token, 
-        uint256 _ticketPrice
-        ) 
-    {
+    // constructor initializes the lottery contract with the token, ticket price, and purchase deadline
+    constructor(IERC20 _token, uint256 _ticketPrice) {
         require(address(_token) != address(0), "Token address cannot be zero");
         require(_ticketPrice > 0, "Ticket price must be greater than zero");
 
@@ -42,7 +93,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
     function buyTicket() public payable {
      require(block.timestamp <= ticketPurchaseDeadline, "Ticket purchase deadline has passed");
 
-        // Attempt to transfer the ticket price from the participant to the contract
+        // attempt to transfer the ticket price from the participant to the contract
         try token.transferFrom(msg.sender, address(this), ticketPrice) {
             _participants.push(msg.sender);
             emit TicketPurchased(msg.sender);
@@ -57,15 +108,15 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
         require(_participants.length > 0, "No participants in the lottery");
         require(_winner == address(0), "Winner has already been selected");
 
-        // Generate a random index to select the winner
+        // generate a random index to select the winner
         uint256 randomIndex = generateRandomNumber() % _participants.length;
         _winner = _participants[randomIndex];
         emit WinnerSelected(_winner);
 
-        // Attempt to transfer the entire contract's token balance to the winner
+        // attempt to transfer the entire contract's token balance to the winner
         uint256 prizeAmount = token.balanceOf(address(this));
         try token.transfer(_winner, prizeAmount) {
-            // Success case: nothing to do
+            // success case: nothing to do
         } catch {
             emit PayoutFailed(_winner, prizeAmount);
         }
