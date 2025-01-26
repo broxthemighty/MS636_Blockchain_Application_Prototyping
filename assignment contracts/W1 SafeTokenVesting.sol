@@ -64,7 +64,7 @@ contract DummyToken is IERC20 {
     }
 }
 
-/// Token vesting contract
+// token vesting contract
 contract SafeTokenVesting {
 
     // state variables
