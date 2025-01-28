@@ -6,7 +6,18 @@
 	"output": {
 		"abi": [
 			{
-				"inputs": [],
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "symbol",
+						"type": "string"
+					}
+				],
 				"stateMutability": "nonpayable",
 				"type": "constructor"
 			},
@@ -239,6 +250,24 @@
 						"type": "uint256"
 					}
 				],
+				"name": "fundContract",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
 				"name": "mint",
 				"outputs": [],
 				"stateMutability": "nonpayable",
@@ -440,7 +469,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"assignment contracts/DummyToken.sol": "DummyToken"
+			"assignment contracts/W1 SafeTokenVesting.sol": "TestToken"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -494,12 +523,12 @@
 				"dweb:/ipfs/Qmax9WHBnVsZP46ZxEMNRQpLQnrdE4dK8LehML1Py8FowF"
 			]
 		},
-		"assignment contracts/DummyToken.sol": {
-			"keccak256": "0xe4af551b1971fad0ec0299749a8cf3e851fcb4de616509f1814b52bcd707a1c1",
+		"assignment contracts/W1 SafeTokenVesting.sol": {
+			"keccak256": "0xc6c311bffb12182a058cd58caf7392882edf02ce538da06e852427649b7acd84",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://bf7e51443bde4dc0172c1060346d68f8d9a94f05027e3c21434c5564c02a6bd3",
-				"dweb:/ipfs/QmTqhjTAB4qoYxh5shxZHeg9r66Uih4YAzmHimWstMcVqB"
+				"bzz-raw://88f2be0d2a1338d1c640e23ff6366f80be1678e32bff313e48b4a6029485647d",
+				"dweb:/ipfs/QmbPgRt7Mvzpioiyw4NjDSfHMzgBZ5hD6gtM8JxHNoo8XL"
 			]
 		}
 	},

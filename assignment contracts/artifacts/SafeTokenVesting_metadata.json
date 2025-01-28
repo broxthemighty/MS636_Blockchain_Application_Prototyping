@@ -72,13 +72,6 @@
 			},
 			{
 				"inputs": [],
-				"name": "fundContract",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [],
 				"name": "getContractBalance",
 				"outputs": [
 					{
@@ -177,7 +170,6 @@
 		"userdoc": {
 			"kind": "user",
 			"methods": {},
-			"notice": "Token vesting contract",
 			"version": 1
 		}
 	},
@@ -206,11 +198,11 @@
 			]
 		},
 		"assignment contracts/W1 SafeTokenVesting.sol": {
-			"keccak256": "0xe7959727c27cf65dc0a09c810c65ce186cc815e9de9749524ec5692d923a6a7e",
+			"keccak256": "0xf94fca9cfe1dd80b3111f9d9bfd93cfef199b578806950fd0d828bf3a3b670e0",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://c8117af9f77e03ed893acf618082bc010b2d1b10058cfb1840c1e90275af0232",
-				"dweb:/ipfs/QmSCZZDG3CHMqqrBg5NmcrzBgh36srZ19zQxiJPvu6kzJ1"
+				"bzz-raw://eb02eac713d067236cd79e534f995b76a3e5faebee7f18c1ab4c0b02790812a2",
+				"dweb:/ipfs/QmQ56wgofT4xdzSnMumx5L3YVJdLnbTpZmQmv1AveMeLQK"
 			]
 		}
 	},
