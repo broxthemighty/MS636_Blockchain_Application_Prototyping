@@ -70,8 +70,8 @@ contract Marketplace {
         require(msg.sender != item.seller, "Seller cannot purchase their own item.");
         require(token.balanceOf(msg.sender) >= item.price, "Insufficient token balance.");
 
-        // Attempt to transfer tokens from buyer to seller
-        try token.transferFrom(msg.sender, item.seller, item.price) {
+        // transfer tokens from buyer to contract (escrow)
+        try token.transferFrom(msg.sender, address(this), item.price) {
             item.isSold = true;
             item.buyer = msg.sender;
 
@@ -88,6 +88,10 @@ contract Marketplace {
 
         require(item.isSold, "Item has not been sold.");
         require(msg.sender == item.seller, "Only the seller can issue refunds.");
+        require(item.buyer != address(0), "Invalid buyer address.");
+
+        // contract must have enough balance to refund
+        require(token.balanceOf(address(this)) >= item.price, "Contract has insufficient balance for refund.");
 
         // Attempt to transfer tokens back to the buyer
         try token.transfer(item.buyer, item.price) {

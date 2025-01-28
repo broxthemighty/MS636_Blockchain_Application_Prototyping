@@ -6,9 +6,84 @@
 	"output": {
 		"abi": [
 			{
-				"inputs": [],
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_token",
+						"type": "address"
+					}
+				],
 				"stateMutability": "nonpayable",
 				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "seller",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
+					}
+				],
+				"name": "ItemCreated",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "buyer",
+						"type": "address"
+					}
+				],
+				"name": "ItemPurchased",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "seller",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "buyer",
+						"type": "address"
+					}
+				],
+				"name": "ItemRefunded",
+				"type": "event"
 			},
 			{
 				"inputs": [
@@ -51,6 +126,19 @@
 						"internalType": "struct Marketplace.Item",
 						"name": "",
 						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "itemIdCounter",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -161,7 +249,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/Marketplace.sol": "Marketplace"
+			"assignment contracts/W4 Marketplace.sol": "Marketplace"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -183,12 +271,12 @@
 				"dweb:/ipfs/QmeTTxZ7qVk9rjEv2R4CpCwdf8UMCcRqDNMvzNxHc3Fnn9"
 			]
 		},
-		"contracts/Marketplace.sol": {
-			"keccak256": "0xcd5e4a5888cb68001ceb904bb7567a41b65042cdd172be6664a861439080a4fa",
+		"assignment contracts/W4 Marketplace.sol": {
+			"keccak256": "0xa03a6030032a74013998e85733a485f12c78c1213f673f7da08af4803d8e1191",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://07dda9ab59fcda4e51f2fb7a78e462cb7189e34594a109bcd9006c07f2442996",
-				"dweb:/ipfs/Qmb9xdqHQ8DUy7vjs19EwuoewjQUzurM6T9U284RvnHYjW"
+				"bzz-raw://6b9130f403b169cb1250577fec76258045e61b28ce544c76a3e91eacb42aaf7e",
+				"dweb:/ipfs/QmUSMyDFcfydgd8dPYVywBipFPZoQwZzhyWEj7mmHusgkd"
 			]
 		}
 	},

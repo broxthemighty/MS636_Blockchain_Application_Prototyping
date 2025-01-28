@@ -9,7 +9,7 @@
 				"inputs": [
 					{
 						"internalType": "address",
-						"name": "_tokenAddress",
+						"name": "_token",
 						"type": "address"
 					}
 				],
@@ -22,126 +22,157 @@
 					{
 						"indexed": false,
 						"internalType": "uint256",
-						"name": "projectId",
+						"name": "id",
 						"type": "uint256"
 					},
 					{
-						"indexed": false,
+						"indexed": true,
 						"internalType": "address",
-						"name": "contributor",
+						"name": "seller",
 						"type": "address"
 					},
 					{
 						"indexed": false,
 						"internalType": "uint256",
-						"name": "amount",
+						"name": "minBid",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "endTime",
 						"type": "uint256"
 					}
 				],
-				"name": "ContributionMade",
+				"name": "AuctionCreated",
 				"type": "event"
 			},
 			{
 				"anonymous": false,
 				"inputs": [
 					{
-						"indexed": false,
+						"indexed": true,
 						"internalType": "uint256",
-						"name": "projectId",
+						"name": "auctionId",
 						"type": "uint256"
 					},
 					{
-						"indexed": false,
+						"indexed": true,
 						"internalType": "address",
-						"name": "creator",
+						"name": "winner",
 						"type": "address"
 					},
 					{
 						"indexed": false,
 						"internalType": "uint256",
-						"name": "amount",
+						"name": "highestBid",
 						"type": "uint256"
 					}
 				],
-				"name": "FundsClaimed",
+				"name": "AuctionFinalized",
 				"type": "event"
 			},
 			{
 				"anonymous": false,
 				"inputs": [
 					{
-						"indexed": false,
+						"indexed": true,
 						"internalType": "uint256",
-						"name": "projectId",
+						"name": "auctionId",
 						"type": "uint256"
 					},
 					{
-						"indexed": false,
+						"indexed": true,
 						"internalType": "address",
-						"name": "creator",
+						"name": "bidder",
 						"type": "address"
 					},
 					{
 						"indexed": false,
 						"internalType": "uint256",
-						"name": "goalAmount",
-						"type": "uint256"
-					},
-					{
-						"indexed": false,
-						"internalType": "uint256",
-						"name": "vestingDuration",
+						"name": "bidAmount",
 						"type": "uint256"
 					}
 				],
-				"name": "ProjectCreated",
+				"name": "BidPlaced",
 				"type": "event"
 			},
 			{
-				"inputs": [
+				"inputs": [],
+				"name": "auctionIdCounter",
+				"outputs": [
 					{
 						"internalType": "uint256",
-						"name": "_projectId",
+						"name": "",
 						"type": "uint256"
 					}
 				],
-				"name": "claimFunds",
-				"outputs": [],
-				"stateMutability": "nonpayable",
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "_projectId",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "auctions",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "seller",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "minBid",
 						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
-						"name": "_amount",
+						"name": "highestBid",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "highestBidder",
+						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "isActive",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "endTime",
 						"type": "uint256"
 					}
 				],
-				"name": "contribute",
-				"outputs": [],
-				"stateMutability": "nonpayable",
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "_goalAmount",
+						"name": "_minBid",
 						"type": "uint256"
 					},
 					{
 						"internalType": "uint256",
-						"name": "_vestingDuration",
+						"name": "_duration",
 						"type": "uint256"
 					}
 				],
-				"name": "createProject",
+				"name": "createAuction",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -150,11 +181,24 @@
 				"inputs": [
 					{
 						"internalType": "uint256",
-						"name": "_projectId",
+						"name": "_auctionId",
 						"type": "uint256"
 					}
 				],
-				"name": "getProjectDetails",
+				"name": "finalizeAuction",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_auctionId",
+						"type": "uint256"
+					}
+				],
+				"name": "getAuctionDetails",
 				"outputs": [
 					{
 						"components": [
@@ -165,36 +209,36 @@
 							},
 							{
 								"internalType": "address",
-								"name": "creator",
+								"name": "seller",
 								"type": "address"
 							},
 							{
 								"internalType": "uint256",
-								"name": "goalAmount",
+								"name": "minBid",
 								"type": "uint256"
 							},
 							{
 								"internalType": "uint256",
-								"name": "currentAmount",
+								"name": "highestBid",
 								"type": "uint256"
 							},
 							{
-								"internalType": "uint256",
-								"name": "startTime",
-								"type": "uint256"
+								"internalType": "address",
+								"name": "highestBidder",
+								"type": "address"
+							},
+							{
+								"internalType": "bool",
+								"name": "isActive",
+								"type": "bool"
 							},
 							{
 								"internalType": "uint256",
-								"name": "vestingDuration",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "releasedTokens",
+								"name": "endTime",
 								"type": "uint256"
 							}
 						],
-						"internalType": "struct SafeCrowdfunding.Project",
+						"internalType": "struct Auction.AuctionItem",
 						"name": "",
 						"type": "tuple"
 					}
@@ -203,8 +247,51 @@
 				"type": "function"
 			},
 			{
-				"inputs": [],
-				"name": "projectIdCounter",
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "pendingWithdrawals",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_auctionId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_bidAmount",
+						"type": "uint256"
+					}
+				],
+				"name": "placeBid",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "sellerPendingWithdrawals",
 				"outputs": [
 					{
 						"internalType": "uint256",
@@ -227,6 +314,13 @@
 				],
 				"stateMutability": "view",
 				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "withdrawSellerFunds",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
 			}
 		],
 		"devdoc": {
@@ -242,7 +336,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"assignment contracts/W3 SafeCrowdfunding.sol": "SafeCrowdfunding"
+			"assignment contracts/W5 Auction.sol": "Auction"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -264,12 +358,12 @@
 				"dweb:/ipfs/QmeTTxZ7qVk9rjEv2R4CpCwdf8UMCcRqDNMvzNxHc3Fnn9"
 			]
 		},
-		"assignment contracts/W3 SafeCrowdfunding.sol": {
-			"keccak256": "0xfd852090304a5d1d5f95e70373cf939a6991074ca4cc901441a882187b23ed90",
+		"assignment contracts/W5 Auction.sol": {
+			"keccak256": "0x650c19bcb81db652b122f4af40a684d7af8b8e71ed75fb06a65122383e81ca79",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://5a271ac17cf32ee5c8231e960b44f7484ddf7ad8f627bdcab4813ebe82561212",
-				"dweb:/ipfs/QmXf4QzEhWnixY8cJKSib1Tf4zDCWegftdF1qwrAHvJiNN"
+				"bzz-raw://71afa089ed58a91ba46ab3733f68684e53322294ac27ac96f7ae5fae87e0de77",
+				"dweb:/ipfs/QmUdm7cr4qzLxdJTCyBDvu4MFTqcaLAzz6pivCHSYpfdmf"
 			]
 		}
 	},
