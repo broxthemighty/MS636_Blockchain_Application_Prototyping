@@ -25,7 +25,7 @@
 				"anonymous": false,
 				"inputs": [
 					{
-						"indexed": true,
+						"indexed": false,
 						"internalType": "address",
 						"name": "winner",
 						"type": "address"
@@ -44,7 +44,7 @@
 				"anonymous": false,
 				"inputs": [
 					{
-						"indexed": true,
+						"indexed": false,
 						"internalType": "address",
 						"name": "participant",
 						"type": "address"
@@ -57,7 +57,7 @@
 				"anonymous": false,
 				"inputs": [
 					{
-						"indexed": true,
+						"indexed": false,
 						"internalType": "address",
 						"name": "winner",
 						"type": "address"
@@ -70,7 +70,7 @@
 				"inputs": [],
 				"name": "buyTicket",
 				"outputs": [],
-				"stateMutability": "payable",
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -159,7 +159,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/SafeLottery.sol": "SafeLottery"
+			"assignment contracts/W2 SafeLottery.sol": "SafeLottery"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -181,12 +181,12 @@
 				"dweb:/ipfs/QmeTTxZ7qVk9rjEv2R4CpCwdf8UMCcRqDNMvzNxHc3Fnn9"
 			]
 		},
-		"contracts/SafeLottery.sol": {
-			"keccak256": "0x60b5e0057e2cba5cd722309beddbd7f8e31fcbdb502ff55167a74220ebbdc09d",
+		"assignment contracts/W2 SafeLottery.sol": {
+			"keccak256": "0x2f25c5988d1afe7596c3aa357a9b1db1bf3ff4746f4b70c86a9cf46b4d746e61",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://670b3651865892837849aaa86260cca30fc5ea5b197ee885e3a3a51ea2fc975d",
-				"dweb:/ipfs/QmempbzLV8YuqjxjQCXQMPER6BBhWRySv7Uq3SwHkFGFCR"
+				"bzz-raw://704f57a926e40531e1987d66e3da987b899cf37096f88f052a16e6af5a4413aa",
+				"dweb:/ipfs/Qmf2CarQAVtGgqf76xYXvgDyNdsjX5mnNMxfdYCQimpCYL"
 			]
 		}
 	},

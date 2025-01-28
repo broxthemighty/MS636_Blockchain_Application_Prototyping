@@ -32,19 +32,25 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
         token = _token;
         ticketPrice = _ticketPrice;
-        ticketPurchaseDeadline = block.timestamp + 24 hours;
+        ticketPurchaseDeadline = block.timestamp + 120;
     }
 
     // purchase a ticket
-    function buyTicket() public payable {
-     require(block.timestamp <= ticketPurchaseDeadline, "Ticket purchase deadline has passed");
+    function buyTicket() public {
+        require(block.timestamp <= ticketPurchaseDeadline, "Ticket purchase deadline has passed");
 
-        // attempt to transfer the ticket price from the participant to the contract
+        // check the allowance
+        uint256 allowance = token.allowance(msg.sender, address(this));
+        require(allowance >= ticketPrice, "Insufficient allowance. Approve the contract to spend tokens.");
+
+        // try to transfer the tokens
         try token.transferFrom(msg.sender, address(this), ticketPrice) {
-            _participants.push(msg.sender);
+            // if successful, add the participant to the list
+             _participants.push(msg.sender);
             emit TicketPurchased(msg.sender);
         } catch {
-            revert("Token transfer failed. Contract must be approved to spend tokens.");
+            // handle any token transfer failure
+            revert("Token transfer failed. Ensure sufficient balance and proper approval.");
         }
     }
 
