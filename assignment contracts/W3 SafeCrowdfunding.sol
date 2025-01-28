@@ -93,7 +93,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
         uint256 vestedAmount;
 
         if (elapsedTime >= project.vestingDuration) {
-            vestedAmount = project.currentAmount; // All funds vested
+            vestedAmount = project.currentAmount; // all funds vested
         } else {
             vestedAmount = (project.currentAmount * elapsedTime) / project.vestingDuration;
         }

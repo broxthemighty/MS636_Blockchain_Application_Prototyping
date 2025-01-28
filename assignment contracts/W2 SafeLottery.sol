@@ -44,7 +44,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
             _participants.push(msg.sender);
             emit TicketPurchased(msg.sender);
         } catch {
-            revert("Token transfer failed. Ensure you approved the contract to spend tokens.");
+            revert("Token transfer failed. Contract must be approved to spend tokens.");
         }
     }
 
@@ -62,7 +62,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
         // attempt to transfer the entire contract's token balance to the winner
         uint256 prizeAmount = token.balanceOf(address(this));
         try token.transfer(_winner, prizeAmount) {
-            // success case: nothing to do
+            // success
         } catch {
             emit PayoutFailed(_winner, prizeAmount);
         }
