@@ -182,11 +182,11 @@
 			]
 		},
 		"assignment contracts/W2 SafeLottery.sol": {
-			"keccak256": "0x2f25c5988d1afe7596c3aa357a9b1db1bf3ff4746f4b70c86a9cf46b4d746e61",
+			"keccak256": "0xe593129182aa5293d4591ab3d437389a1dcd86ac687f975e187fd8eed2deae4a",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://704f57a926e40531e1987d66e3da987b899cf37096f88f052a16e6af5a4413aa",
-				"dweb:/ipfs/Qmf2CarQAVtGgqf76xYXvgDyNdsjX5mnNMxfdYCQimpCYL"
+				"bzz-raw://e9acdc5c94e18585d8c72de8c18a94603bd527aa19e366ac63cb1da132656f09",
+				"dweb:/ipfs/Qmc41H3XuLjyvjnJjV1CffCjc9bjyD1G1Ji6JKt7Ks5SRK"
 			]
 		}
 	},

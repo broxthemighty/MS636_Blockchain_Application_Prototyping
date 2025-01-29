@@ -25,7 +25,7 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
     event WinnerSelected(address winner);
     event PayoutFailed(address winner, uint256 amount);
 
-    // constructor initializes the lottery contract with the token, ticket price, and purchase deadline
+    // constructor initializes token, ticket price, and purchase deadline
     constructor(IERC20 _token, uint256 _ticketPrice) {
         require(address(_token) != address(0), "Token address cannot be zero");
         require(_ticketPrice > 0, "Ticket price must be greater than zero");
@@ -54,9 +54,9 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
         }
     }
 
-    // select the _winner from _participants and try to pay them
+    // select the winner from participants and try to pay them
     function selectWinner() public {
-       require(block.timestamp > ticketPurchaseDeadline, "Cannot select a winner before the deadline");
+        require(block.timestamp > ticketPurchaseDeadline, "Cannot select a winner before the deadline");
         require(_participants.length > 0, "No participants in the lottery");
         require(_winner == address(0), "Winner has already been selected");
 
