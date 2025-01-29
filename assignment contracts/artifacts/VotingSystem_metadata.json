@@ -6,9 +6,75 @@
 	"output": {
 		"abi": [
 			{
-				"inputs": [],
+				"inputs": [
+					{
+						"internalType": "contract IERC20",
+						"name": "_token",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_proposalFee",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_voteFee",
+						"type": "uint256"
+					}
+				],
 				"stateMutability": "nonpayable",
 				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "creator",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "description",
+						"type": "string"
+					}
+				],
+				"name": "ProposalCreated",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "proposalId",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "voter",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "bool",
+						"name": "vote",
+						"type": "bool"
+					}
+				],
+				"name": "Voted",
+				"type": "event"
 			},
 			{
 				"inputs": [
@@ -192,7 +258,7 @@
 	},
 	"settings": {
 		"compilationTarget": {
-			"contracts/VotingSystem.sol": "VotingSystem"
+			"assignment contracts/W6 VotingSystem.sol": "VotingSystem"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -214,12 +280,12 @@
 				"dweb:/ipfs/QmeTTxZ7qVk9rjEv2R4CpCwdf8UMCcRqDNMvzNxHc3Fnn9"
 			]
 		},
-		"contracts/VotingSystem.sol": {
-			"keccak256": "0xf667fa488e59395e5426c4778b93e9abf7b5a58ab7e049256f60d4c3337a48e0",
+		"assignment contracts/W6 VotingSystem.sol": {
+			"keccak256": "0xdf4993c554b7447a4cb9597dcb0e7fdbfff6aa0dd8aabeced8cf515a5e3a3150",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://40243887cd1c4ccc28184fa15d905b848687f594d5ce38659d2efab03f4a4ad0",
-				"dweb:/ipfs/QmP4q4nAwXqvFnLyRNUAyTF6P5sW1XK68MwH19xSPynZCZ"
+				"bzz-raw://09bc8781524ebb644e39758a3e12c50b30d4f43d9cd87786af32ad5decb38784",
+				"dweb:/ipfs/QmfMR1wh8qtx6YJCRu4CaTo6ixtefZTbd5AJJ4dGXaC7wK"
 			]
 		}
 	},
