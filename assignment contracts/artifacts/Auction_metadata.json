@@ -201,46 +201,39 @@
 				"name": "getAuctionDetails",
 				"outputs": [
 					{
-						"components": [
-							{
-								"internalType": "uint256",
-								"name": "id",
-								"type": "uint256"
-							},
-							{
-								"internalType": "address",
-								"name": "seller",
-								"type": "address"
-							},
-							{
-								"internalType": "uint256",
-								"name": "minBid",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "highestBid",
-								"type": "uint256"
-							},
-							{
-								"internalType": "address",
-								"name": "highestBidder",
-								"type": "address"
-							},
-							{
-								"internalType": "bool",
-								"name": "isActive",
-								"type": "bool"
-							},
-							{
-								"internalType": "uint256",
-								"name": "endTime",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct Auction.AuctionItem",
-						"name": "",
-						"type": "tuple"
+						"internalType": "uint256",
+						"name": "id",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "seller",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "minBid",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "highestBid",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "highestBidder",
+						"type": "address"
+					},
+					{
+						"internalType": "bool",
+						"name": "isActive",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "endTime",
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -359,11 +352,11 @@
 			]
 		},
 		"assignment contracts/W5 Auction.sol": {
-			"keccak256": "0x650c19bcb81db652b122f4af40a684d7af8b8e71ed75fb06a65122383e81ca79",
+			"keccak256": "0xf5aecf28c9970db085c58ff3eb9ed21e1fa2fe5394bf11f424e6cb76bad628e6",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://71afa089ed58a91ba46ab3733f68684e53322294ac27ac96f7ae5fae87e0de77",
-				"dweb:/ipfs/QmUdm7cr4qzLxdJTCyBDvu4MFTqcaLAzz6pivCHSYpfdmf"
+				"bzz-raw://fd4c3460b13934a4f3799a7b2d8bf9f0bd4c3509b01185b9f1d4503c7e1c59fe",
+				"dweb:/ipfs/QmQ8GVbBpgBxeFhoJRkjg3TECYVPQvVjUq4QveKLEQZEct"
 			]
 		}
 	},

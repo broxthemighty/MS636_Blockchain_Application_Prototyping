@@ -38,18 +38,18 @@ contract Auction {
     // counter for auction id
     uint256 public auctionIdCounter;
 
-    // events
+    // events - trying indexed to make the arguments part of a filter and searchable off chain
     event AuctionCreated(uint256 id, address indexed seller, uint256 minBid, uint256 endTime);
     event BidPlaced(uint256 indexed auctionId, address indexed bidder, uint256 bidAmount);
     event AuctionFinalized(uint256 indexed auctionId, address indexed winner, uint256 highestBid);
     
-    // initializes the auction contract with the ERC20 token address.
+    // initializes the auction contract with the ERC20 token address
     constructor(address _token) {
         require(_token != address(0), "Token address cannot be zero.");
         token = IERC20(_token);
     }
 
-    // creates a new auction.
+    // creates a new auction
     function createAuction(uint256 _minBid, uint256 _duration) external {
         require(_minBid > 0, "Minimum bid must be greater than zero.");
         require(_duration > 0, "Duration must be greater than zero.");
@@ -69,7 +69,7 @@ contract Auction {
         auctionIdCounter++;
     }
 
-    // places a bid on an active auction.
+    // places a bid on an active auction
     function placeBid(uint256 _auctionId, uint256 _bidAmount) external {
         require(_auctionId < auctions.length, "Auction does not exist.");
         AuctionItem storage auction = auctions[_auctionId];
@@ -78,19 +78,19 @@ contract Auction {
         require(_bidAmount > auction.highestBid, "Bid must be higher than the current highest bid.");
         require(_bidAmount >= auction.minBid, "Bid must meet the minimum bid amount.");
 
-        // Transfer new bid to escrow
+        // transfer new bid to escrow
         try token.transferFrom(msg.sender, address(this), _bidAmount) {
-            // Refund previous highest bidder safely
+            // refund previous highest bidder safely
             if (auction.highestBid > 0) {
                 try token.transfer(auction.highestBidder, auction.highestBid) {
-                    // Successful refund, nothing more to do
+                    // successful refund
                 } catch {
-                    // Refund failed, store it for manual withdrawal
+                    // refund failed, store it
                     pendingWithdrawals[auction.highestBidder] += auction.highestBid;
                 }
             }
 
-            // Update highest bid
+            // update highest bid
             auction.highestBid = _bidAmount;
             auction.highestBidder = msg.sender;
 
@@ -140,8 +140,31 @@ contract Auction {
     }
 
     // retrieves the details of a specific auction.
-    function getAuctionDetails(uint256 _auctionId) external view returns (AuctionItem memory) {
+    function getAuctionDetails(uint256 _auctionId)
+        external
+        view
+        returns (
+            uint256 id,
+            address seller,
+            uint256 minBid,
+            uint256 highestBid,
+            address highestBidder,
+            bool isActive,
+            uint256 endTime
+        )
+    {
         require(_auctionId < auctions.length, "Auction does not exist.");
-        return auctions[_auctionId];
+    
+        AuctionItem memory auction = auctions[_auctionId];
+
+        return (
+            auction.id,
+            auction.seller,
+            auction.minBid,
+            auction.highestBid,
+            auction.highestBidder,
+            auction.isActive,
+            auction.endTime
+        );
     }
 }
