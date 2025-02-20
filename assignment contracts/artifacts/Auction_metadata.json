@@ -98,6 +98,25 @@
 				"type": "event"
 			},
 			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "seller",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "Withdrawal",
+				"type": "event"
+			},
+			{
 				"inputs": [],
 				"name": "auctionIdCounter",
 				"outputs": [
@@ -277,25 +296,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "",
-						"type": "address"
-					}
-				],
-				"name": "sellerPendingWithdrawals",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"inputs": [],
 				"name": "token",
 				"outputs": [
@@ -310,7 +310,7 @@
 			},
 			{
 				"inputs": [],
-				"name": "withdrawSellerFunds",
+				"name": "withdrawFunds",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -352,11 +352,11 @@
 			]
 		},
 		"assignment contracts/W5 Auction.sol": {
-			"keccak256": "0xf5aecf28c9970db085c58ff3eb9ed21e1fa2fe5394bf11f424e6cb76bad628e6",
+			"keccak256": "0xa5ea96829fd38df39d8f91a67dabdbc71c3065ab101df795ada54c1bba13bee6",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://fd4c3460b13934a4f3799a7b2d8bf9f0bd4c3509b01185b9f1d4503c7e1c59fe",
-				"dweb:/ipfs/QmQ8GVbBpgBxeFhoJRkjg3TECYVPQvVjUq4QveKLEQZEct"
+				"bzz-raw://64ce01988eb9d7173fc7c59fb1ffa26711b9dbf3cc20be2aa36a22954b240f06",
+				"dweb:/ipfs/QmNnzeRuebRF8GGiJHC35fETfAM9zwzb97gY37ac7gCPcF"
 			]
 		}
 	},

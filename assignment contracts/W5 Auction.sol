@@ -29,9 +29,6 @@ contract Auction {
     // map of withdrawal transactions
     mapping(address => uint256) public pendingWithdrawals;
 
-    // map of seller withdrawals
-    mapping(address => uint256) public sellerPendingWithdrawals;
-
     // array of auctions
     AuctionItem[] public auctions;
 
@@ -42,6 +39,7 @@ contract Auction {
     event AuctionCreated(uint256 id, address indexed seller, uint256 minBid, uint256 endTime);
     event BidPlaced(uint256 indexed auctionId, address indexed bidder, uint256 bidAmount);
     event AuctionFinalized(uint256 indexed auctionId, address indexed winner, uint256 highestBid);
+    event Withdrawal(address indexed seller, uint256 amount);
     
     // initializes the auction contract with the ERC20 token address
     constructor(address _token) {
@@ -65,7 +63,6 @@ contract Auction {
         }));
 
         emit AuctionCreated(auctionIdCounter, msg.sender, _minBid, block.timestamp + _duration);
-
         auctionIdCounter++;
     }
 
@@ -78,27 +75,27 @@ contract Auction {
         require(_bidAmount > auction.highestBid, "Bid must be higher than the current highest bid.");
         require(_bidAmount >= auction.minBid, "Bid must meet the minimum bid amount.");
 
-        // transfer new bid to escrow
+        // transfer bid amount from bidder to contract
         try token.transferFrom(msg.sender, address(this), _bidAmount) {
-            // refund previous highest bidder safely
+            // refund the previous highest bidder
             if (auction.highestBid > 0) {
                 try token.transfer(auction.highestBidder, auction.highestBid) {
-                    // successful refund
                 } catch {
-                    // refund failed, store it
+                    // if refund fails, store it in pending withdrawals
                     pendingWithdrawals[auction.highestBidder] += auction.highestBid;
                 }
             }
 
-            // update highest bid
+            // update auction details
             auction.highestBid = _bidAmount;
             auction.highestBidder = msg.sender;
 
             emit BidPlaced(_auctionId, msg.sender, _bidAmount);
         } catch {
-            revert("Token transfer failed.");
+            revert("Bid transfer failed.");
         }
     }
+    
 
     // finalizes an auction, transferring the highest bid to the seller.
     function finalizeAuction(uint256 _auctionId) external {
@@ -110,32 +107,32 @@ contract Auction {
         auction.isActive = false;
 
         if (auction.highestBid > 0) {
-            // try transferring funds to seller
+            // transfer highest bid to the seller
             try token.transfer(auction.seller, auction.highestBid) {
                 emit AuctionFinalized(_auctionId, auction.highestBidder, auction.highestBid);
             } catch {
                 // if transfer fails, store funds in pending withdrawals
-                sellerPendingWithdrawals[auction.seller] += auction.highestBid;
+                pendingWithdrawals[auction.seller] += auction.highestBid;
                 emit AuctionFinalized(_auctionId, auction.highestBidder, auction.highestBid);
             }
         } else {
+            // no bids were placed, auction ends with no winner
             emit AuctionFinalized(_auctionId, address(0), 0);
         }
     }
 
-    // allow sellers to withdraw failed payouts
-    function withdrawSellerFunds() external {
-        uint256 amount = sellerPendingWithdrawals[msg.sender];
-        require(amount > 0, "No pending funds.");
-        sellerPendingWithdrawals[msg.sender] = 0; // prevent re-entrancy attacks
+    // withdraw funds function
+    function withdrawFunds() external {
+        uint256 amount = pendingWithdrawals[msg.sender];
+        require(amount > 0, "No funds to withdraw.");
+        pendingWithdrawals[msg.sender] = 0; // prevent reentrancy attack
 
-        // attempt to transfer funds to the seller
         try token.transfer(msg.sender, amount) {
-            // transfer success
+            emit Withdrawal(msg.sender, amount);
         } catch {
-            // revert and reassign funds to pending withdrawals in case of failure
-            sellerPendingWithdrawals[msg.sender] = amount;
-            revert("Withdraw failed.");
+            // if transfer fails, revert and restore balance
+            pendingWithdrawals[msg.sender] = amount;
+            revert("Withdrawal failed.");
         }
     }
 
