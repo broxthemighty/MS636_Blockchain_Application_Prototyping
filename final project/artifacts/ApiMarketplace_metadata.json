@@ -845,11 +845,11 @@
 			]
 		},
 		"final project/General API Marketplace Token.sol": {
-			"keccak256": "0x49b2063339f2db64c370b5b023bc4f2fe9cb56ac712b53831531011320cb4d6a",
+			"keccak256": "0xaee6914b7595d842f422b31c83f437d70b4180ce898393e369083c4919a34484",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://9916905cb9123bd66394cc3448d48de9c4e11940a9abeeec2711d46137487ac2",
-				"dweb:/ipfs/QmNzmHFDE9NVG8xhzb98pq1HfRziXwV8NJj6r1aPdh9yqf"
+				"bzz-raw://77bb1104eda5a3e2e1fe3edb74ea6a484142d2b98e4338671b9ca2e3f422c533",
+				"dweb:/ipfs/QmeBpLyDFidTqbeSThryMdvpddSNNawpk73fDyGeyPkrEK"
 			]
 		}
 	},
