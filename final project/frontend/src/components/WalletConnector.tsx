@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { BrowserProvider } from "ethers";
+import React from "react";
 
-// ✅ Define props type
 interface WalletConnectorProps {
   onWalletConnected: (provider: BrowserProvider) => void;
 }
@@ -15,7 +15,7 @@ export default function WalletConnector({ onWalletConnected }: WalletConnectorPr
         const provider = new BrowserProvider(window.ethereum);
         const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
         setAccount(accounts[0]);
-        onWalletConnected(provider); // ✅ Now correctly typed
+        onWalletConnected(provider);
       } catch (error) {
         console.error("Wallet connection failed:", error);
       }
@@ -25,11 +25,18 @@ export default function WalletConnector({ onWalletConnected }: WalletConnectorPr
   }
 
   return (
-    <div>
+    <div className="flex flex-col items-center justify-center">
       {account ? (
-        <p>Connected: {account.substring(0, 6)}...{account.slice(-4)}</p>
+        <p className="text-green-600 text-lg font-semibold">
+          Connected: {account.substring(0, 6)}...{account.slice(-4)}
+        </p>
       ) : (
-        <button onClick={connectWallet}>Connect MetaMask</button>
+        <button
+          onClick={connectWallet}
+          className="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition"
+        >
+          Connect MetaMask
+        </button>
       )}
     </div>
   );

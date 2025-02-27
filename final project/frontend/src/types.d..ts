@@ -1,5 +1,7 @@
-// ✅ Declare MetaMask's Ethereum provider in TypeScript
-interface Window {
-    ethereum?: import("ethers").providers.ExternalProvider;
+export {};
+
+declare global {
+  interface Window {
+    ethereum?: import("ethers").Eip1193Provider;
   }
-  
+}
