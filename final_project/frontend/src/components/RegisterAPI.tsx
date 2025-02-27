@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { ethers } from "ethers";
-import contractABI from "../../contracts/GeneralApiMarketplaceToken.json";
 import React from "react";
-
-const CONTRACT_ADDRESS = "0xYourDeployedContractAddress"; // Replace with actual contract address
+import { CONTRACT_ADDRESS, ABI } from "../config";
 
 const RegisterAPI = () => {
   const [name, setName] = useState("");
@@ -16,7 +14,7 @@ const RegisterAPI = () => {
 
     const provider = new ethers.BrowserProvider(window.ethereum);
     const signer = await provider.getSigner();
-    const contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, signer);
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
 
     try {
       const tx = await contract.registerAPI(

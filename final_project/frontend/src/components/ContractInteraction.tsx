@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { BrowserProvider, Contract } from "ethers";
-import contractABI from "../../contracts/GeneralApiMarketplaceToken.json" with { type: "json" };
+import { CONTRACT_ADDRESS, ABI } from "../config";
+
 
 interface ContractInteractionProps {
   provider: BrowserProvider;
@@ -13,9 +14,8 @@ export default function ContractInteraction({ provider }: ContractInteractionPro
     async function fetchApiCount() {
       try {
         const signer = await provider.getSigner();
-        const contract = new Contract(
-          "0xd119f71ad07cC8D59d3000e9387Cb559eC33dB78",
-          contractABI,
+        const contract = new Contract(CONTRACT_ADDRESS,
+          ABI,
           signer
         );
         await contract.apiIdCounter(); // fetch data but do nothing with it

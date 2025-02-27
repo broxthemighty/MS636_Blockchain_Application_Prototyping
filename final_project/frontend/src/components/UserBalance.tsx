@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
-import contractJson from "../../contracts/GeneralApiMarketplaceToken.json";
-
-const CONTRACT_ADDRESS = "0xYourDeployedContractAddress";
-const CONTRACT_ABI = contractJson.abi; // Extract only the ABI array
+import { CONTRACT_ADDRESS, ABI } from "../config";
 
 const UserBalance = () => {
   const [balance, setBalance] = useState("0");
@@ -14,7 +11,7 @@ const UserBalance = () => {
         try {
           const provider = new ethers.BrowserProvider(window.ethereum);
           const signer = await provider.getSigner();
-          const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer); // Pass only ABI array
+          const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer); // Pass only ABI array
           
           const userAddress = await signer.getAddress();
           const balance = await contract.getUserTokenBalance(userAddress);

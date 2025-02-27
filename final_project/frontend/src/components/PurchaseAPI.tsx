@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { ethers } from "ethers";
-import contractABI from "../../contracts/GeneralApiMarketplaceToken.json";
+import { CONTRACT_ADDRESS, ABI } from "../config";
 import React from "react";
-
-const CONTRACT_ADDRESS = "0xYourDeployedContractAddress";
 
 const PurchaseAPI = () => {
   const [apiId, setApiId] = useState("");
@@ -14,13 +12,12 @@ const PurchaseAPI = () => {
 
     const provider = new ethers.BrowserProvider(window.ethereum);
     const signer = await provider.getSigner();
-    const contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, signer);
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
 
     try {
       const api = await contract.getAPI(apiId);
       const pricePerRequest = api[1];
-      const totalCost = ethers.parseEther(pricePerRequest).mul(requests);
-
+      const totalCost = ethers.parseEther(pricePerRequest) * BigInt(requests);
       const tx = await contract.purchaseAPIAccess(apiId, requests, { value: totalCost });
       await tx.wait();
       alert("API Access Purchased!");
