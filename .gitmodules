@@ -1,0 +1,6 @@
+[submodule "final project/frontend/lib/forge-std"]
+	path = final project/frontend/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "final project/frontend/contract-deployment/lib/forge-std"]
+	path = final project/frontend/contract-deployment/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
