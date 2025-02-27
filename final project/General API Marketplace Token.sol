@@ -12,7 +12,7 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
  * @dev General API Marketplace Contract
  * @custom:dev-run-script ./scripts/deploy_with_ethers.ts
  */
-
+ 
 contract ApiMarketplace is ReentrancyGuard, AccessControl {
     using SafeERC20 for IERC20;
 
