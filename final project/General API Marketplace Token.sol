@@ -4,6 +4,7 @@ pragma solidity >=0.8.2 <0.9.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
 
 /**Created by Matt Lindborg
  * UAT MS636 Week 7
@@ -11,122 +12,165 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
  * @dev General API Marketplace Contract
  * @custom:dev-run-script ./scripts/deploy_with_ethers.ts
  */
-
-// API marketplace contract, using tokens as currency
-contract GeneralApiMarketplaceToken is ReentrancyGuard {
+ 
+contract ApiMarketplace is ReentrancyGuard, AccessControl {
     using SafeERC20 for IERC20;
 
-    // state variables
+    // token used for payments.
     IERC20 public immutable token;
+
+    // contract owner (marketplace administrator).
     address public owner;
 
-    // API access struct
-    struct APIAccess {
+    // admin role hash for permission control.
+    bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
+
+    // counter for API IDs
+    uint256 public apiIdCounter;
+
+    // API provider revenue balances
+    mapping(address => uint256) public providerBalances;
+
+    // struct to store API details
+    struct API {
+        address provider;
         string name;
         uint256 pricePerRequest;
+        uint256 subscriptionPrice;
+        uint256 subscriptionDuration;
         uint256 totalPurchases;
         bool isActive;
     }
 
-    // user usage struct, of map of remainingRequests
+    // mapping of API ID to API details.
+    mapping(uint256 => API) public apis;
+
+    // struct to store user API access details.
     struct UserUsage {
         mapping(uint256 => uint256) remainingRequests;
+        mapping(uint256 => uint256) subscriptionExpiry;
     }
 
-    // API id counter
-    uint256 public apiIdCounter;
-
-    // map of APIs
-    mapping(uint256 => APIAccess) public apis;
-
-    // map of user usages
+    // mapping of user addresses to their API access details.
     mapping(address => UserUsage) private userUsages;
 
-    // events, using indexed
-    event APIRegistered(uint256 indexed apiId, string name, uint256 pricePerRequest);
+    // events
+    event APIRegistered(uint256 indexed apiId, address indexed provider, string name, uint256 pricePerRequest, uint256 subscriptionPrice);
     event APIAccessPurchased(address indexed user, uint256 indexed apiId, uint256 requests);
-    event APICallMade(address indexed user, uint256 indexed apiId);
-    event TokensWithdrawn(address indexed owner, uint256 amount);
+    event APICallMade(address indexed user, uint256 indexed apiId, uint256 timestamp);
+    event TokensWithdrawn(address indexed provider, uint256 amount);
+    event APIStatusUpdated(uint256 indexed apiId, bool isActive);
+    event SubscriptionPurchased(address indexed user, uint256 indexed apiId, uint256 duration);
+    event SubscriptionCancelled(address indexed user, uint256 indexed apiId);
+    event RefundIssued(address indexed user, uint256 indexed apiId, uint256 amount);
 
-    // constructor, using a token
     constructor(IERC20 _token) {
         require(address(_token) != address(0), "Invalid token address");
         token = _token;
         owner = msg.sender;
+
+        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        _grantRole(ADMIN_ROLE, msg.sender);
     }
 
-    // only owner modifier
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Caller is not the owner");
+    modifier onlyProvider(uint256 _apiId) {
+        require(apis[_apiId].provider == msg.sender, "Not the API provider");
         _;
     }
 
-    // register API function
-    function registerAPI(string memory _name, uint256 _pricePerRequest) external onlyOwner {
+    modifier onlyAdmin() {
+        require(hasRole(ADMIN_ROLE, msg.sender), "Caller is not an admin");
+        _;
+    }
+
+    function registerAPI(
+        string memory _name,
+        uint256 _pricePerRequest,
+        uint256 _subscriptionPrice,
+        uint256 _subscriptionDuration
+    ) external {
         require(bytes(_name).length > 0, "API name cannot be empty");
-        require(_pricePerRequest > 0, "Price per request must be greater than zero");
+        require(_pricePerRequest > 0 || _subscriptionPrice > 0, "At least one pricing option required");
 
         uint256 apiId = apiIdCounter++;
-        apis[apiId] = APIAccess({
+        apis[apiId] = API({
+            provider: msg.sender,
             name: _name,
             pricePerRequest: _pricePerRequest,
+            subscriptionPrice: _subscriptionPrice,
+            subscriptionDuration: _subscriptionDuration,
             totalPurchases: 0,
             isActive: true
         });
 
-        emit APIRegistered(apiId, _name, _pricePerRequest);
+        emit APIRegistered(apiId, msg.sender, _name, _pricePerRequest, _subscriptionPrice);
     }
 
-    // purchase API access function
     function purchaseAPIAccess(uint256 _apiId, uint256 _requests) external {
         require(_apiId < apiIdCounter, "API does not exist");
-        require(_requests > 0, "Number of requests must be greater than zero");
+        require(_requests > 0, "Must purchase at least one request");
 
-        APIAccess storage api = apis[_apiId];
+        API storage api = apis[_apiId];
         require(api.isActive, "API is not active");
 
         uint256 totalCost = api.pricePerRequest * _requests;
-
-        // prevent potential overflow in multiplication
-        require(totalCost / _requests == api.pricePerRequest, "Overflow detected");
-
-        // transfer tokens from user to contract
         token.safeTransferFrom(msg.sender, address(this), totalCost);
 
         userUsages[msg.sender].remainingRequests[_apiId] += _requests;
-        api.totalPurchases += _requests;
+        providerBalances[api.provider] += totalCost;
 
+        api.totalPurchases += _requests;
         emit APIAccessPurchased(msg.sender, _apiId, _requests);
     }
 
-    // use API access function
+    function purchaseSubscription(uint256 _apiId) external {
+        require(_apiId < apiIdCounter, "API does not exist");
+
+        API storage api = apis[_apiId];
+        require(api.isActive, "API is not active");
+
+        uint256 totalCost = api.subscriptionPrice;
+        token.safeTransferFrom(msg.sender, address(this), totalCost);
+
+        userUsages[msg.sender].subscriptionExpiry[_apiId] = block.timestamp + api.subscriptionDuration;
+        providerBalances[api.provider] += totalCost;
+
+        emit SubscriptionPurchased(msg.sender, _apiId, api.subscriptionDuration);
+    }
+
     function useAPIAccess(uint256 _apiId) external {
         require(_apiId < apiIdCounter, "API does not exist");
 
-        APIAccess storage api = apis[_apiId];
+        API storage api = apis[_apiId];
         require(api.isActive, "API is not active");
 
         uint256 remaining = userUsages[msg.sender].remainingRequests[_apiId];
-        require(remaining > 0, "No remaining API requests");
+        require(remaining > 0, "No remaining requests");
 
         userUsages[msg.sender].remainingRequests[_apiId] -= 1;
 
-        emit APICallMade(msg.sender, _apiId);
+        emit APICallMade(msg.sender, _apiId, block.timestamp);
     }
 
-    // withdraw tokens function
-    function withdrawTokens() external onlyOwner nonReentrant {
-        uint256 balance = token.balanceOf(address(this));
-        require(balance > 0, "No tokens to withdraw");
+    function withdrawEarnings() external nonReentrant {
+        uint256 balance = providerBalances[msg.sender];
+        require(balance > 0, "No earnings to withdraw");
 
-        token.safeTransfer(owner, balance);
+        providerBalances[msg.sender] = 0;
+        token.safeTransfer(msg.sender, balance);
 
-        emit TokensWithdrawn(owner, balance);
+        emit TokensWithdrawn(msg.sender, balance);
     }
 
-    // get remaining requests function
-    function getRemainingRequests(address _user, uint256 _apiId) external view returns (uint256) {
+    function cancelSubscription(uint256 _apiId) external {
         require(_apiId < apiIdCounter, "API does not exist");
-        return userUsages[_user].remainingRequests[_apiId];
+        require(userUsages[msg.sender].subscriptionExpiry[_apiId] > block.timestamp, "No active subscription");
+
+        userUsages[msg.sender].subscriptionExpiry[_apiId] = block.timestamp;
+        emit SubscriptionCancelled(msg.sender, _apiId);
+    }
+
+    function getUserBalance(address _user) external view returns (uint256) {
+        return token.balanceOf(_user);
     }
 }
