@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { ethers } from "ethers";
 import { CONTRACT_ADDRESS, ABI } from "../config";
-import React from "react";
 
 const PurchaseAPI = () => {
   const [apiId, setApiId] = useState("");

@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { BrowserProvider, Contract } from "ethers";
 import { CONTRACT_ADDRESS, ABI } from "../config";
 
-
 interface ContractInteractionProps {
   provider: BrowserProvider;
 }

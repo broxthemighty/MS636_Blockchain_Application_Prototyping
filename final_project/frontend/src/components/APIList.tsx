@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import { BrowserProvider, Contract } from "ethers";
 import { CONTRACT_ADDRESS, ABI } from "../config";
-import React from "react";
-
 
 interface API {
   id: number;

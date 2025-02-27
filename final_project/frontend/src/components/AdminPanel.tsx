@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { BrowserProvider, Contract } from "ethers";
 import { CONTRACT_ADDRESS, ABI } from "../config";
-import React from "react";
 
 interface Props {
   provider: BrowserProvider;

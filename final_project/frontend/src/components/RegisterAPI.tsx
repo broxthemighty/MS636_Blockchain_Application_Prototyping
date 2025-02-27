@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { ethers } from "ethers";
-import React from "react";
 import { CONTRACT_ADDRESS, ABI } from "../config";
 
 const RegisterAPI = () => {

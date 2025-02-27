@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { BrowserProvider } from "ethers";
-import React from "react";
 
 interface WalletConnectorProps {
   onWalletConnected: (provider: BrowserProvider) => void;
