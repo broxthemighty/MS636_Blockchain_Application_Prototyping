@@ -87,6 +87,12 @@
 						"internalType": "uint256",
 						"name": "apiId",
 						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "timestamp",
+						"type": "uint256"
 					}
 				],
 				"name": "APICallMade",
@@ -102,6 +108,12 @@
 						"type": "uint256"
 					},
 					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "provider",
+						"type": "address"
+					},
+					{
 						"indexed": false,
 						"internalType": "string",
 						"name": "name",
@@ -111,6 +123,12 @@
 						"indexed": false,
 						"internalType": "uint256",
 						"name": "pricePerRequest",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "subscriptionPrice",
 						"type": "uint256"
 					}
 				],
@@ -250,6 +268,25 @@
 						"internalType": "uint256",
 						"name": "apiId",
 						"type": "uint256"
+					}
+				],
+				"name": "SubscriptionCancelled",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "user",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "uint256",
+						"name": "apiId",
+						"type": "uint256"
 					},
 					{
 						"indexed": false,
@@ -267,7 +304,7 @@
 					{
 						"indexed": true,
 						"internalType": "address",
-						"name": "owner",
+						"name": "provider",
 						"type": "address"
 					},
 					{
@@ -307,19 +344,6 @@
 				"type": "function"
 			},
 			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_admin",
-						"type": "address"
-					}
-				],
-				"name": "addAdmin",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
 				"inputs": [],
 				"name": "apiIdCounter",
 				"outputs": [
@@ -343,6 +367,11 @@
 				"name": "apis",
 				"outputs": [
 					{
+						"internalType": "address",
+						"name": "provider",
+						"type": "address"
+					},
+					{
 						"internalType": "string",
 						"name": "name",
 						"type": "string"
@@ -350,6 +379,16 @@
 					{
 						"internalType": "uint256",
 						"name": "pricePerRequest",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "subscriptionPrice",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "subscriptionDuration",
 						"type": "uint256"
 					},
 					{
@@ -369,25 +408,14 @@
 			{
 				"inputs": [
 					{
-						"internalType": "address",
-						"name": "_user",
-						"type": "address"
-					},
-					{
 						"internalType": "uint256",
 						"name": "_apiId",
 						"type": "uint256"
 					}
 				],
-				"name": "getRemainingRequests",
-				"outputs": [
-					{
-						"internalType": "uint256",
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"stateMutability": "view",
+				"name": "cancelSubscription",
+				"outputs": [],
+				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -415,19 +443,14 @@
 						"internalType": "address",
 						"name": "_user",
 						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_apiId",
-						"type": "uint256"
 					}
 				],
-				"name": "getSubscriptionStatus",
+				"name": "getUserBalance",
 				"outputs": [
 					{
-						"internalType": "bool",
+						"internalType": "uint256",
 						"name": "",
-						"type": "bool"
+						"type": "uint256"
 					}
 				],
 				"stateMutability": "view",
@@ -491,6 +514,25 @@
 			{
 				"inputs": [
 					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "providerBalances",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
 						"internalType": "uint256",
 						"name": "_apiId",
 						"type": "uint256"
@@ -512,27 +554,9 @@
 						"internalType": "uint256",
 						"name": "_apiId",
 						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_duration",
-						"type": "uint256"
 					}
 				],
 				"name": "purchaseSubscription",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_apiId",
-						"type": "uint256"
-					}
-				],
-				"name": "refundUnusedRequests",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -548,22 +572,19 @@
 						"internalType": "uint256",
 						"name": "_pricePerRequest",
 						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_subscriptionPrice",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_subscriptionDuration",
+						"type": "uint256"
 					}
 				],
 				"name": "registerAPI",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "address",
-						"name": "_admin",
-						"type": "address"
-					}
-				],
-				"name": "removeAdmin",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -600,24 +621,6 @@
 					}
 				],
 				"name": "revokeRole",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_apiId",
-						"type": "uint256"
-					},
-					{
-						"internalType": "bool",
-						"name": "_isActive",
-						"type": "bool"
-					}
-				],
-				"name": "setAPIStatus",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
@@ -669,14 +672,15 @@
 			},
 			{
 				"inputs": [],
-				"name": "withdrawTokens",
+				"name": "withdrawEarnings",
 				"outputs": [],
 				"stateMutability": "nonpayable",
 				"type": "function"
 			}
 		],
 		"devdoc": {
-			"details": "Marketplace where users can buy API access with tokens",
+			"custom:dev-run-script": "./scripts/deploy_with_ethers.ts",
+			"details": "General API Marketplace Contract",
 			"errors": {
 				"AccessControlBadConfirmation()": [
 					{
@@ -732,12 +736,13 @@
 		"userdoc": {
 			"kind": "user",
 			"methods": {},
+			"notice": "Created by Matt Lindborg UAT MS636 Week 7",
 			"version": 1
 		}
 	},
 	"settings": {
 		"compilationTarget": {
-			"final project/General API Marketplace Token.sol": "GeneralApiMarketplaceToken"
+			"final project/GeneralApiMarketplaceToken.sol": "GeneralApiMarketplaceToken"
 		},
 		"evmVersion": "cancun",
 		"libraries": {},
@@ -839,12 +844,12 @@
 				"dweb:/ipfs/QmfDRc7pxfaXB2Dh9np5Uf29Na3pQ7tafRS684wd3GLjVL"
 			]
 		},
-		"final project/General API Marketplace Token.sol": {
-			"keccak256": "0x7bf8c054451dce8a7b7cf9cdc17ffeafa4ed60eef9dc62b08ef358d501952275",
+		"final project/GeneralApiMarketplaceToken.sol": {
+			"keccak256": "0x7c9bed059b9d4356cf7871e5d016f703fa9f7b268973eb0ebb986ef784112f8b",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://0a40a8aa60daeb4ad0f05e15f7c62312aac13079592c0a8aad95395e4522d81b",
-				"dweb:/ipfs/QmY1MbuYJPiSwtxCmCyNZFu7aLALWv3CQM5jcMS8NhEqfF"
+				"bzz-raw://3a183358041e1e893e002fd438c301fd8f7bc28bd15e4ca2df889beeb7bea4f7",
+				"dweb:/ipfs/QmPi6JdJiuAxTEnKjqEfxgXpYCUP2JYZsTS2bzRpAytDJp"
 			]
 		}
 	},
