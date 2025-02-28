@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { BrowserProvider, Contract } from "ethers";
 import { CONTRACT_ADDRESS, ABI } from "../config";
+import { Box, SimpleGrid, Text, Flex } from "@chakra-ui/react";
 
 interface API {
   id: number;
@@ -51,39 +52,37 @@ export default function APIList({ provider }: Props) {
   }, [provider]);
 
   return (
-    <div className="flex flex-col items-center w-full max-w-7xl p-4">
-      <h2 className="text-3xl font-bold text-gray-800 text-center">Available APIs</h2>
-  
-      <button
-        onClick={fetchAPIs}
-        className="mb-4 px-6 py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition"
-      >
-        Refresh API List 🔄
-      </button>
-  
+    <Box>
       {apis.length > 0 ? (
-        <div className="flex flex-wrap justify-center gap-4 w-full max-w-7xl">
+        <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
           {apis.map((api) => (
-            <div
-              key={api.id}
-              className="bg-white rounded-lg shadow-md p-4 flex flex-col items-center justify-between w-64 h-44 border border-gray-300"
-            >
-              <p className="text-lg font-bold text-gray-800">{api.name}</p>
-              <p className="text-md text-gray-600">💰 Price: {api.pricePerRequest} Tokens</p>
-              <p className="text-md text-gray-600">📈 Purchases: {api.totalPurchases}</p>
-              <p
-                className={`text-md font-semibold ${
-                  api.isActive ? "text-green-600" : "text-red-600"
-                }`}
-              >
-                {api.isActive ? "🟢 Active" : "🔴 Inactive"}
-              </p>
-            </div>
+            <Box key={api.id} p={4} shadow="md" borderRadius="lg" bg="white" borderWidth="1px">
+              <Text fontSize="lg" fontWeight="bold" color="gray.800">
+                {api.name}
+              </Text>
+              <Text fontSize="md" color="gray.600">
+                💰 Price: {api.pricePerRequest} Tokens
+              </Text>
+              <Text fontSize="md" color="gray.600">
+                📈 Purchases: {api.totalPurchases}
+              </Text>
+              <Flex justify="center" mt={2}>
+                <Text
+                  fontSize="md"
+                  fontWeight="semibold"
+                  color={api.isActive ? "green.500" : "red.500"}
+                >
+                  {api.isActive ? "🟢 Active" : "🔴 Inactive"}
+                </Text>
+              </Flex>
+            </Box>
           ))}
-        </div>
+        </SimpleGrid>
       ) : (
-        <p className="text-gray-600 text-center">No APIs found</p>
+        <Text fontSize="md" color="gray.600">
+          No APIs found
+        </Text>
       )}
-    </div>
-  );  
+    </Box>
+  );
 }

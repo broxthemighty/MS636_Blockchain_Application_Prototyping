@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { BrowserProvider, Contract } from "ethers";
 import { CONTRACT_ADDRESS, ABI } from "../config";
+import { Box, Heading, Input, Button, VStack } from "@chakra-ui/react";
 
 interface Props {
   provider: BrowserProvider;
@@ -8,7 +9,9 @@ interface Props {
 
 export default function AdminPanel({ provider }: Props) {
   const [apiName, setApiName] = useState("");
-  const [apiPrice, setApiPrice] = useState("");
+  const [pricePerRequest, setPricePerRequest] = useState("");
+  const [subscriptionPrice, setSubscriptionPrice] = useState("");
+  const [subscriptionDuration, setSubscriptionDuration] = useState("");
 
   async function registerAPI() {
     if (!provider) return;
@@ -16,7 +19,12 @@ export default function AdminPanel({ provider }: Props) {
     const contract = new Contract(CONTRACT_ADDRESS, ABI, signer);
 
     try {
-      const tx = await contract.registerAPI(apiName, apiPrice);
+      const tx = await contract.registerAPI(
+        apiName,
+        BigInt(pricePerRequest), // Ensure uint256 conversion
+        BigInt(subscriptionPrice),
+        BigInt(subscriptionDuration)
+      );
       await tx.wait();
       alert("API registered successfully!");
     } catch (error) {
@@ -25,11 +33,43 @@ export default function AdminPanel({ provider }: Props) {
   }
 
   return (
-  <div className="w-full max-w-lg bg-white shadow-md rounded-lg p-6 mt-4">
-      <h2>Admin Panel</h2>
-      <input type="text" value={apiName} onChange={(e) => setApiName(e.target.value)} placeholder="API Name" />
-      <input type="number" value={apiPrice} onChange={(e) => setApiPrice(e.target.value)} placeholder="Price" />
-      <button onClick={registerAPI}>Register API</button>
-    </div>
+    <Box>
+      <VStack gap={2}>
+        <Input
+          value={apiName}
+          onChange={(e) => setApiName(e.target.value)}
+          placeholder="API Name"
+          variant="outline"
+          size="sm" // Smaller input size
+        />
+        <Input
+          type="number"
+          value={pricePerRequest}
+          onChange={(e) => setPricePerRequest(e.target.value)}
+          placeholder="Price Per Request"
+          variant="outline"
+          size="sm" // Smaller input size
+        />
+        <Input
+          type="number"
+          value={subscriptionPrice}
+          onChange={(e) => setSubscriptionPrice(e.target.value)}
+          placeholder="Subscription Price"
+          variant="outline"
+          size="sm" // Smaller input size
+        />
+        <Input
+          type="number"
+          value={subscriptionDuration}
+          onChange={(e) => setSubscriptionDuration(e.target.value)}
+          placeholder="Subscription Duration (seconds)"
+          variant="outline"
+          size="sm" // Smaller input size
+        />
+        <Button onClick={registerAPI} colorScheme="blue" width="full" size="sm"> {/* Smaller button size */}
+          Register API
+        </Button>
+      </VStack>
+    </Box>
   );
 }

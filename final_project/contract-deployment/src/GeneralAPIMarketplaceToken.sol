@@ -6,14 +6,14 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
-/**
- * Created by Matt Lindborg
+/**Created by Matt Lindborg
  * UAT MS636 Week 7
  * @title General API Marketplace Token
  * @dev General API Marketplace Contract
  * @custom:dev-run-script ./scripts/deploy_with_ethers.ts
  */
-contract ApiMarketplace is ReentrancyGuard, AccessControl {
+ 
+contract GeneralApiMarketplaceToken is ReentrancyGuard, AccessControl {
     using SafeERC20 for IERC20;
 
     // token used for payments.
@@ -55,9 +55,7 @@ contract ApiMarketplace is ReentrancyGuard, AccessControl {
     mapping(address => UserUsage) private userUsages;
 
     // events
-    event APIRegistered(
-        uint256 indexed apiId, address indexed provider, string name, uint256 pricePerRequest, uint256 subscriptionPrice
-    );
+    event APIRegistered(uint256 indexed apiId, address indexed provider, string name, uint256 pricePerRequest, uint256 subscriptionPrice);
     event APIAccessPurchased(address indexed user, uint256 indexed apiId, uint256 requests);
     event APICallMade(address indexed user, uint256 indexed apiId, uint256 timestamp);
     event TokensWithdrawn(address indexed provider, uint256 amount);

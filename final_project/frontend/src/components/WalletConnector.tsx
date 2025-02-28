@@ -7,6 +7,7 @@ interface WalletConnectorProps {
 
 export default function WalletConnector({ onWalletConnected }: WalletConnectorProps) {
   const [account, setAccount] = useState<string | null>(null);
+  const [statusMessage, setStatusMessage] = useState<{ text: string; type: string } | null>(null);
 
   async function connectWallet() {
     if (window.ethereum) {
@@ -15,28 +16,20 @@ export default function WalletConnector({ onWalletConnected }: WalletConnectorPr
         const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
         setAccount(accounts[0]);
         onWalletConnected(provider);
+
+        setStatusMessage({
+          text: `Wallet Connected: ${accounts[0].substring(0, 6)}...${accounts[0].slice(-4)}`,
+          type: "success",
+        });
       } catch (error) {
         console.error("Wallet connection failed:", error);
+        setStatusMessage({ text: "Failed to connect MetaMask.", type: "error" });
       }
     } else {
-      alert("MetaMask is not installed. Please install it to continue.");
+      setStatusMessage({ text: "Please install MetaMask to continue.", type: "warning" });
     }
   }
 
-  return (
-    <div className="flex flex-col items-center justify-center">
-      {account ? (
-        <p className="text-green-600 text-lg font-semibold">
-          Connected: {account.substring(0, 6)}...{account.slice(-4)}
-        </p>
-      ) : (
-        <button
-          onClick={connectWallet}
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition"
-        >
-          Connect MetaMask
-        </button>
-      )}
-    </div>
-  );
+  // No visual output is returned
+  return null;
 }

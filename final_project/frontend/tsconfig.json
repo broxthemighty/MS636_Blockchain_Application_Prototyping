@@ -6,6 +6,7 @@
   ],
   "compilerOptions": {
     "jsx": "react-jsx"
-  }
+  },
+  "include": ["src", "pages"]
 }
 
