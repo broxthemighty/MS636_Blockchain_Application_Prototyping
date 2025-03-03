@@ -411,6 +411,37 @@
 						"internalType": "uint256",
 						"name": "_apiId",
 						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_requests",
+						"type": "uint256"
+					}
+				],
+				"name": "approveAndPurchaseAPIAccess",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_apiId",
+						"type": "uint256"
+					}
+				],
+				"name": "approveAndPurchaseSubscription",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_apiId",
+						"type": "uint256"
 					}
 				],
 				"name": "cancelSubscription",
@@ -528,37 +559,6 @@
 					}
 				],
 				"stateMutability": "view",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_apiId",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "_requests",
-						"type": "uint256"
-					}
-				],
-				"name": "purchaseAPIAccess",
-				"outputs": [],
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"inputs": [
-					{
-						"internalType": "uint256",
-						"name": "_apiId",
-						"type": "uint256"
-					}
-				],
-				"name": "purchaseSubscription",
-				"outputs": [],
-				"stateMutability": "nonpayable",
 				"type": "function"
 			},
 			{
@@ -845,11 +845,11 @@
 			]
 		},
 		"final project/GeneralApiMarketplaceToken.sol": {
-			"keccak256": "0x7c9bed059b9d4356cf7871e5d016f703fa9f7b268973eb0ebb986ef784112f8b",
+			"keccak256": "0xd39e774185ef64f96e191ae7aea58aa0605c8fbab84dde9a44e234725c0b47e7",
 			"license": "MIT",
 			"urls": [
-				"bzz-raw://3a183358041e1e893e002fd438c301fd8f7bc28bd15e4ca2df889beeb7bea4f7",
-				"dweb:/ipfs/QmPi6JdJiuAxTEnKjqEfxgXpYCUP2JYZsTS2bzRpAytDJp"
+				"bzz-raw://e4938211d79c72cc2c0d6c52dd4cecc6bbc3f81fdd4887defd2c07fea9512e08",
+				"dweb:/ipfs/QmPUUNWcLt8cb5xU1sW9B8HeEiEGXP3GMrEVGvpQ3Hdx7b"
 			]
 		}
 	},
