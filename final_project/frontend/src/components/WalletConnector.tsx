@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BrowserProvider } from "ethers";
 
 interface WalletConnectorProps {
@@ -7,7 +7,27 @@ interface WalletConnectorProps {
 
 export default function WalletConnector({ onWalletConnected }: WalletConnectorProps) {
   const [account, setAccount] = useState<string | null>(null);
-  const [statusMessage, setStatusMessage] = useState<{ text: string; type: string } | null>(null);
+
+  // Check for an already connected wallet on component mount
+  useEffect(() => {
+    async function checkConnectedWallet() {
+      if (window.ethereum) {
+        try {
+          const provider = new BrowserProvider(window.ethereum);
+          const accounts = await window.ethereum.request({ method: "eth_accounts" });
+
+          if (accounts.length > 0) {
+            setAccount(accounts[0]);
+            onWalletConnected(provider);
+          }
+        } catch (error) {
+          console.error("Failed to check connected wallet:", error);
+        }
+      }
+    }
+
+    checkConnectedWallet();
+  }, [onWalletConnected]);
 
   async function connectWallet() {
     if (window.ethereum) {
@@ -16,19 +36,20 @@ export default function WalletConnector({ onWalletConnected }: WalletConnectorPr
         const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
         setAccount(accounts[0]);
         onWalletConnected(provider);
-
-        setStatusMessage({
-          text: `Wallet Connected: ${accounts[0].substring(0, 6)}...${accounts[0].slice(-4)}`,
-          type: "success",
-        });
       } catch (error) {
         console.error("Wallet connection failed:", error);
-        setStatusMessage({ text: "Failed to connect MetaMask.", type: "error" });
       }
     } else {
-      setStatusMessage({ text: "Please install MetaMask to continue.", type: "warning" });
+      console.error("MetaMask is not installed.");
     }
   }
+
+  // Trigger wallet connection automatically
+  useEffect(() => {
+    if (!account) {
+      connectWallet();
+    }
+  }, [account]);
 
   // No visual output is returned
   return null;

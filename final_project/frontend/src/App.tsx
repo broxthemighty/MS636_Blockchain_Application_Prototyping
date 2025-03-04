@@ -7,8 +7,8 @@ import APIList from "./components/APIList";
 import AdminPanel from "./components/AdminPanel";
 
 export default function App() {
-  // Fix: Explicitly set the type of `provider` as `BrowserProvider | null`
   const [provider, setProvider] = useState<BrowserProvider | null>(null);
+  const [isAdminPanelOpen, setIsAdminPanelOpen] = useState(false); // State to toggle admin panel
 
   return (
     <ChakraProvider value={defaultSystem}>
@@ -28,7 +28,7 @@ export default function App() {
             </Box>
 
             {/* API List Section */}
-            <Box mt={6}>
+            <Box mt={6}> {}
               <Heading size="md" mb={4}>Available APIs</Heading>
               <Button mt={2} colorScheme="blackAlpha">
                 Refresh API List 🔄
@@ -38,10 +38,22 @@ export default function App() {
               <APIList provider={provider} />
             </Box>
 
-            {/* Admin Panel (Top-Right Positioning) */}
-            <Box position="absolute" top={4} right={4} bg="gray.800" p={3} shadow="lg" borderRadius="lg" w="180px"> {/* Smaller size */}
-              <AdminPanel provider={provider} />
+            {/* Admin Panel Toggle Button */}
+            <Box position="absolute" top={4} right={4}>
+              <Button
+                onClick={() => setIsAdminPanelOpen(!isAdminPanelOpen)}
+                colorScheme="blue"
+              >
+                Admin Panel {isAdminPanelOpen ? "<" : "^"} {/* Toggle text symbols */}
+              </Button>
             </Box>
+
+            {/* Admin Panel (Conditionally Rendered) */}
+            {isAdminPanelOpen && (
+              <Box position="absolute" top={16} right={4} bg="gray.800" p={3} shadow="lg" borderRadius="lg" w="180px">
+                <AdminPanel provider={provider} />
+              </Box>
+            )}
           </>
         )}
       </Box>

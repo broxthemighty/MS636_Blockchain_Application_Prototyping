@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@chakra-ui/card": "^2.2.0",
+    "@chakra-ui/icon": "^3.2.0",
     "@chakra-ui/provider": "^2.4.2",
     "@chakra-ui/react": "^3.8.1",
     "@chakra-ui/styled-system": "2.12.0",
@@ -22,11 +23,16 @@
     "@emotion/is-prop-valid": "^1.3.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
+    "@fortawesome/free-brands-svg-icons": "^6.7.2",
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "@react-icons/all-files": "^4.1.0",
     "@tailwindcss/vite": "^4.0.9",
     "ethers": "^6.13.5",
     "framer-motion": "^12.4.7",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-icons": "^5.5.0",
     "supports-color": "^10.0.0"
   },
   "devDependencies": {

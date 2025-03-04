@@ -21,7 +21,7 @@ export default function AdminPanel({ provider }: Props) {
     try {
       const tx = await contract.registerAPI(
         apiName,
-        BigInt(pricePerRequest), // Ensure uint256 conversion
+        BigInt(pricePerRequest),
         BigInt(subscriptionPrice),
         BigInt(subscriptionDuration)
       );
@@ -29,18 +29,36 @@ export default function AdminPanel({ provider }: Props) {
       alert("API registered successfully!");
     } catch (error) {
       console.error("Error registering API:", error);
+      alert("Failed to register API. Please try again.");
+    }
+  }
+
+  async function withdrawEarnings() {
+    if (!provider) return;
+    const signer = await provider.getSigner();
+    const contract = new Contract(CONTRACT_ADDRESS, ABI, signer);
+
+    try {
+      const tx = await contract.withdrawEarnings();
+      await tx.wait();
+      alert("Earnings withdrawn successfully!");
+    } catch (error) {
+      console.error("Error withdrawing earnings:", error);
+      alert("Failed to withdraw earnings. Please try again.");
     }
   }
 
   return (
     <Box>
-      <VStack gap={2}>
+      <VStack gap={3}>
+        <Heading size="md" mb={4}>Admin Panel</Heading>
+
+        {/* Register API Section */}
         <Input
           value={apiName}
           onChange={(e) => setApiName(e.target.value)}
           placeholder="API Name"
           variant="outline"
-          size="sm" // Smaller input size
         />
         <Input
           type="number"
@@ -48,7 +66,6 @@ export default function AdminPanel({ provider }: Props) {
           onChange={(e) => setPricePerRequest(e.target.value)}
           placeholder="Price Per Request"
           variant="outline"
-          size="sm" // Smaller input size
         />
         <Input
           type="number"
@@ -56,7 +73,6 @@ export default function AdminPanel({ provider }: Props) {
           onChange={(e) => setSubscriptionPrice(e.target.value)}
           placeholder="Subscription Price"
           variant="outline"
-          size="sm" // Smaller input size
         />
         <Input
           type="number"
@@ -64,10 +80,14 @@ export default function AdminPanel({ provider }: Props) {
           onChange={(e) => setSubscriptionDuration(e.target.value)}
           placeholder="Subscription Duration (seconds)"
           variant="outline"
-          size="sm" // Smaller input size
         />
-        <Button onClick={registerAPI} colorScheme="blue" width="full" size="sm"> {/* Smaller button size */}
+        <Button onClick={registerAPI} colorScheme="blue" width="full">
           Register API
+        </Button>
+
+        {/* Withdraw Earnings Section */}
+        <Button onClick={withdrawEarnings} colorScheme="green" width="full">
+          Withdraw Earnings
         </Button>
       </VStack>
     </Box>
