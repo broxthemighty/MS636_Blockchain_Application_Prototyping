@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { BrowserProvider } from "ethers";
-import { ChakraProvider, Box, Flex, Heading, Text, Button } from "@chakra-ui/react";
+import { ChakraProvider, Box, Heading, Text, Button } from "@chakra-ui/react";
 import { defaultSystem } from "@chakra-ui/react";
 import WalletConnector from "./components/WalletConnector";
 import APIList from "./components/APIList";
