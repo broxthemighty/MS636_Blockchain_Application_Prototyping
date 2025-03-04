@@ -12,8 +12,13 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
  * @dev General API Marketplace Contract
  * @custom:dev-run-script ./scripts/deploy_with_ethers.ts
  */
+<<<<<<<< HEAD:final_project/General API Marketplace Token.sol
  
 contract ApiMarketplace is ReentrancyGuard, AccessControl {
+========
+
+contract GeneralApiMarketplaceToken is ReentrancyGuard, AccessControl {
+>>>>>>>> 83be9f3413a550c408d868b6b2d7298c53be6295:final_project/GeneralApiMarketplaceToken.sol
     using SafeERC20 for IERC20;
 
     // token used for payments.
@@ -55,6 +60,7 @@ contract ApiMarketplace is ReentrancyGuard, AccessControl {
     mapping(address => UserUsage) private userUsages;
 
     // events
+<<<<<<<< HEAD:final_project/General API Marketplace Token.sol
     event APIRegistered(uint256 indexed apiId, address indexed provider, string name, uint256 pricePerRequest, uint256 subscriptionPrice);
     event APIAccessPurchased(address indexed user, uint256 indexed apiId, uint256 requests);
     event APICallMade(address indexed user, uint256 indexed apiId, uint256 timestamp);
@@ -63,6 +69,38 @@ contract ApiMarketplace is ReentrancyGuard, AccessControl {
     event SubscriptionPurchased(address indexed user, uint256 indexed apiId, uint256 duration);
     event SubscriptionCancelled(address indexed user, uint256 indexed apiId);
     event RefundIssued(address indexed user, uint256 indexed apiId, uint256 amount);
+========
+    event APIRegistered(
+        uint256 indexed apiId,
+        address indexed provider,
+        string name,
+        uint256 pricePerRequest,
+        uint256 subscriptionPrice
+    );
+    event APIAccessPurchased(
+        address indexed user,
+        uint256 indexed apiId,
+        uint256 requests
+    );
+    event APICallMade(
+        address indexed user,
+        uint256 indexed apiId,
+        uint256 timestamp
+    );
+    event TokensWithdrawn(address indexed provider, uint256 amount);
+    event APIStatusUpdated(uint256 indexed apiId, bool isActive);
+    event SubscriptionPurchased(
+        address indexed user,
+        uint256 indexed apiId,
+        uint256 duration
+    );
+    event SubscriptionCancelled(address indexed user, uint256 indexed apiId);
+    event RefundIssued(
+        address indexed user,
+        uint256 indexed apiId,
+        uint256 amount
+    );
+>>>>>>>> 83be9f3413a550c408d868b6b2d7298c53be6295:final_project/GeneralApiMarketplaceToken.sol
 
     constructor(IERC20 _token) {
         require(address(_token) != address(0), "Invalid token address");
@@ -90,7 +128,14 @@ contract ApiMarketplace is ReentrancyGuard, AccessControl {
         uint256 _subscriptionDuration
     ) external {
         require(bytes(_name).length > 0, "API name cannot be empty");
+<<<<<<<< HEAD:final_project/General API Marketplace Token.sol
         require(_pricePerRequest > 0 || _subscriptionPrice > 0, "At least one pricing option required");
+========
+        require(
+            _pricePerRequest > 0 || _subscriptionPrice > 0,
+            "At least one pricing option required"
+        );
+>>>>>>>> 83be9f3413a550c408d868b6b2d7298c53be6295:final_project/GeneralApiMarketplaceToken.sol
 
         uint256 apiId = apiIdCounter++;
         apis[apiId] = API({
@@ -103,6 +148,7 @@ contract ApiMarketplace is ReentrancyGuard, AccessControl {
             isActive: true
         });
 
+<<<<<<<< HEAD:final_project/General API Marketplace Token.sol
         emit APIRegistered(apiId, msg.sender, _name, _pricePerRequest, _subscriptionPrice);
     }
 
@@ -151,6 +197,66 @@ contract ApiMarketplace is ReentrancyGuard, AccessControl {
 
         emit APICallMade(msg.sender, _apiId, block.timestamp);
     }
+========
+        emit APIRegistered(
+            apiId,
+            msg.sender,
+            _name,
+            _pricePerRequest,
+            _subscriptionPrice
+        );
+    }
+
+    function approveAndPurchaseAPIAccess(uint256 _apiId, uint256 _requests) external {
+    require(_apiId < apiIdCounter, "API does not exist");
+    require(_requests > 0, "Must purchase at least one request");
+
+    API storage api = apis[_apiId];
+    require(api.isActive, "API is not active");
+
+    uint256 totalCost = api.pricePerRequest * _requests;
+
+    // approve tokens internally
+    token.safeTransferFrom(msg.sender, address(this), totalCost);
+
+    userUsages[msg.sender].remainingRequests[_apiId] += _requests;
+    providerBalances[api.provider] += totalCost;
+
+    api.totalPurchases += _requests;
+    emit APIAccessPurchased(msg.sender, _apiId, _requests);
+}
+
+function approveAndPurchaseSubscription(uint256 _apiId) external {
+    require(_apiId < apiIdCounter, "API does not exist");
+
+    API storage api = apis[_apiId];
+    require(api.isActive, "API is not active");
+
+    uint256 totalCost = api.subscriptionPrice;
+
+    // approve tokens internally
+    token.safeTransferFrom(msg.sender, address(this), totalCost);
+
+    userUsages[msg.sender].subscriptionExpiry[_apiId] = block.timestamp + api.subscriptionDuration;
+    providerBalances[api.provider] += totalCost;
+
+    emit SubscriptionPurchased(msg.sender, _apiId, api.subscriptionDuration);
+}
+
+function useAPIAccess(uint256 _apiId) external {
+    require(_apiId < apiIdCounter, "API does not exist");
+
+    API storage api = apis[_apiId];
+    require(api.isActive, "API is not active");
+
+    uint256 remaining = userUsages[msg.sender].remainingRequests[_apiId];
+    require(remaining > 0, "No remaining requests");
+
+    userUsages[msg.sender].remainingRequests[_apiId] -= 1;
+
+    emit APICallMade(msg.sender, _apiId, block.timestamp);
+}
+>>>>>>>> 83be9f3413a550c408d868b6b2d7298c53be6295:final_project/GeneralApiMarketplaceToken.sol
 
     function withdrawEarnings() external nonReentrant {
         uint256 balance = providerBalances[msg.sender];
@@ -164,7 +270,14 @@ contract ApiMarketplace is ReentrancyGuard, AccessControl {
 
     function cancelSubscription(uint256 _apiId) external {
         require(_apiId < apiIdCounter, "API does not exist");
+<<<<<<<< HEAD:final_project/General API Marketplace Token.sol
         require(userUsages[msg.sender].subscriptionExpiry[_apiId] > block.timestamp, "No active subscription");
+========
+        require(
+            userUsages[msg.sender].subscriptionExpiry[_apiId] > block.timestamp,
+            "No active subscription"
+        );
+>>>>>>>> 83be9f3413a550c408d868b6b2d7298c53be6295:final_project/GeneralApiMarketplaceToken.sol
 
         userUsages[msg.sender].subscriptionExpiry[_apiId] = block.timestamp;
         emit SubscriptionCancelled(msg.sender, _apiId);
